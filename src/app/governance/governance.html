@@ -1,0 +1,124 @@
+<div class="w-full py-12 px-6 sm:px-8 lg:px-10 min-h-screen">
+  
+  <!-- GOVERNANCE HEADER (7px SHARP) -->
+  <div class="mb-14 flex flex-col xl:flex-row xl:items-end justify-between gap-10">
+    <div class="flex flex-col gap-3">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-1.5 bg-blue-600 rounded-sm shadow-lg shadow-blue-100"></div>
+        <span class="text-[10px] font-black uppercase text-blue-400 tracking-[0.4em]">Policy Authority</span>
+      </div>
+      <h1 class="text-6xl font-black text-slate-900 tracking-tighter uppercase leading-none">Access Governance</h1>
+      <p class="text-slate-500 font-bold text-lg max-w-xl">Provision module-level access across your realm. Define who sees what based on Keycloak Realm Roles.</p>
+    </div>
+
+    <div class="flex items-center gap-4">
+       <p-button label="PROVISION NEW ROLE" 
+                icon="pi pi-plus-circle" 
+                pRipple
+                (onClick)="openAddRole()"
+                styleClass="!bg-blue-600 !text-white !font-black !px-10 !py-4.5 !rounded-[7px] !shadow-2xl !shadow-blue-200"></p-button>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 gap-12">
+    
+    <!-- MODULE LOCKDOWN GRID -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      @for (module of modules(); track module.id) {
+        <div class="glass-surface p-8 flex flex-col gap-6 relative overflow-hidden bg-white hover:border-blue-600/50 transition-all">
+          <div class="flex items-center gap-4">
+             <div class="w-12 h-12 bg-slate-50 rounded-[7px] flex items-center justify-center text-blue-600 border border-blue-50 shadow-inner">
+                <i [class]="module.icon + ' text-xl'"></i>
+             </div>
+             <div class="flex flex-col">
+                <h3 class="text-xl font-black text-slate-900 uppercase tracking-tighter">{{ module.id }}</h3>
+                <span class="text-[9px] font-black text-blue-400 tracking-widest uppercase">Target Scope</span>
+             </div>
+          </div>
+          
+          <p class="text-xs font-bold text-slate-400 leading-relaxed">{{ module.description }}</p>
+
+          <div class="space-y-4 pt-6 border-t border-slate-50">
+             <span class="text-[9px] font-black text-slate-300 uppercase tracking-[0.3em]">Authorized Access (Roles)</span>
+             <div class="flex flex-wrap gap-2 pt-2">
+                @for (role of store.allRealmRoles(); track role.id) {
+                  <div (click)="provisionRole(module.id, role.name)" 
+                       class="cursor-pointer px-4 py-2 rounded-[5px] border-2 text-[9px] font-black uppercase tracking-widest transition-all hover:scale-105 active:scale-95 flex items-center gap-2"
+                       [class.bg-blue-600]="isAuthorized(module.id, role.name)"
+                       [class.text-white]="isAuthorized(module.id, role.name)"
+                       [class.border-blue-600]="isAuthorized(module.id, role.name)"
+                       [class.bg-white]="!isAuthorized(module.id, role.name)"
+                       [class.text-slate-500]="!isAuthorized(module.id, role.name)"
+                       [class.border-slate-50]="!isAuthorized(module.id, role.name)"
+                  >
+                    <i class="pi" [class.pi-check]="isAuthorized(module.id, role.name)" [class.pi-circle]="!isAuthorized(module.id, role.name)"></i>
+                    {{ role.name }}
+                  </div>
+                }
+             </div>
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- ROLE LIFECYCLE MANAGEMENT -->
+    <div class="glass-surface rounded-[7px] overflow-hidden bg-white border border-blue-50 shadow-2xl shadow-blue-100/10">
+       <div class="p-10 border-b border-blue-50 flex items-center justify-between bg-blue-50/10">
+          <div class="flex flex-col">
+             <h2 class="text-3xl font-black text-slate-900 uppercase tracking-tighter leading-none mb-1">Realm Role Lifecycle</h2>
+             <span class="text-xs font-bold text-slate-400 tracking-tight">Revoke or provision global Keycloak roles for this security context.</span>
+          </div>
+          <div class="w-14 h-14 bg-white border border-blue-50 text-blue-500 rounded-[7px] flex items-center justify-center shadow-inner">
+             <i class="pi pi-key text-2xl"></i>
+          </div>
+       </div>
+
+       <div class="p-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+         @for (role of store.allRealmRoles(); track role.id) {
+           <div class="p-6 bg-slate-50 border border-blue-50 rounded-[7px] flex items-center justify-between transition-all hover:shadow-lg hover:bg-white group">
+              <div class="flex flex-col">
+                 <span class="text-sm font-black text-slate-700 uppercase tracking-tight">{{ role.name }}</span>
+                 <span class="text-[9px] font-black text-slate-300 tracking-[0.2em] mt-1">{{ role.id.substring(0, 15) }}...</span>
+              </div>
+              <p-button icon="pi pi-trash" 
+                        [text]="true" 
+                        severity="danger" 
+                        pRipple
+                        (onClick)="revokeRole(role.name)"
+                        pTooltip="REVOKE FROM REALM"
+                        styleClass="!w-10 !h-10 transition-all opacity-0 group-hover:opacity-100"></p-button>
+           </div>
+         }
+       </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- PROVISION ROLE DIALOG -->
+<p-dialog [(visible)]="showAddRoleDialog" 
+          [modal]="true" 
+          [header]="'Provision New Realm Role'" 
+          [draggable]="false" 
+          [resizable]="false"
+          styleClass="w-[450px] !rounded-[7px] overflow-hidden border-none shadow-3xl">
+  <div class="flex flex-col gap-10 pt-10 pb-4">
+    <p-floatLabel>
+      <input pInputText id="newRole" [ngModel]="newRoleName()" (ngModelChange)="newRoleName.set($event)" class="w-full !rounded-[7px]" />
+      <label for="newRole" class="!font-black !text-[9px] !uppercase">Identity Scope Name (e.g. AUDITOR)</label>
+    </p-floatLabel>
+    
+    <div class="flex flex-col gap-3">
+       <p-button label="CREATE IDENTITY SCOPE" 
+                (onClick)="confirmAddRole()" 
+                [disabled]="!newRoleName().trim()"
+                pRipple
+                styleClass="w-full !bg-blue-600 !text-white !font-black !py-4.5 !rounded-[7px] !shadow-2xl !shadow-blue-100"></p-button>
+       <p-button label="DISCARD" 
+                [text]="true" 
+                severity="secondary" 
+                (onClick)="showAddRoleDialog.set(false)"
+                styleClass="w-full !font-black !text-[10px] !uppercase !tracking-widest !text-slate-400"></p-button>
+    </div>
+  </div>
+</p-dialog>

@@ -1,0 +1,255 @@
+<div class="w-full py-12 px-6 sm:px-8 lg:px-10 min-h-screen">
+  
+  <!-- ULTRA-SHARP BLUE HEADER -->
+  <div class="mb-14 flex flex-col xl:flex-row xl:items-end justify-between gap-10 animate-in fade-in slide-in-from-top duration-1000">
+    <div class="flex flex-col gap-3">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-1.5 bg-blue-600 rounded-sm shadow-lg shadow-blue-100"></div>
+        <span class="text-[10px] font-black uppercase text-blue-400 tracking-[0.4em]">IAM Authority</span>
+      </div>
+      <h1 class="text-6xl font-black text-slate-900 tracking-tighter uppercase leading-none">Identity Control</h1>
+      <p class="text-slate-500 font-bold text-lg max-w-xl">Harness the full power of Keycloak identity management with a state-of-the-art secure dashboard.</p>
+    </div>
+    
+    <div class="flex items-center gap-6">
+       <div class="luminescent-card px-10 py-8 rounded-[7px] flex items-center gap-12 bg-white border border-blue-100 transition-all hover:shadow-2xl hover:shadow-blue-100/50">
+          <div class="flex flex-col text-center">
+             <span class="text-[9px] font-black uppercase text-blue-300 tracking-[0.3em] mb-2 uppercase">Enrolled</span>
+             <span class="text-5xl font-black text-blue-600 tracking-tighter leading-none">{{ store.userCount() }}</span>
+          </div>
+          <div class="h-10 w-px bg-blue-100"></div>
+          <div class="flex flex-col text-center">
+             <span class="text-[9px] font-black uppercase text-purple-300 tracking-[0.3em] mb-2 uppercase">Scopes</span>
+             <span class="text-5xl font-black text-purple-600 tracking-tighter leading-none">{{ store.allRealmRoles().length }}</span>
+          </div>
+       </div>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 xl:grid-cols-[460px_1fr] gap-10 auto-rows-min">
+    
+    <!-- ULTRA-SHARP FORM PANEL -->
+    <div class="glass-surface p-10 rounded-[7px] flex flex-col gap-10 sticky top-28 h-fit border border-blue-50 shadow-2xl shadow-blue-100/10 animate-in fade-in slide-in-from-left duration-700 delay-300">
+      <div class="flex items-center gap-5 border-b border-blue-50 pb-8">
+        <div class="w-16 h-16 rounded-[7px] bg-blue-600 shadow-2xl shadow-blue-100 flex items-center justify-center text-white text-3xl font-black">
+           <i class="pi pi-shield"></i>
+        </div>
+        <div class="flex flex-col">
+          <h2 class="text-2xl font-black text-slate-900 tracking-tighter leading-tight uppercase">{{ isEditMode() ? 'Update Account' : 'Provision User' }}</h2>
+          <span class="text-[9px] font-black text-blue-400 uppercase tracking-widest leading-none mt-1">Identity Enrollment Gate</span>
+        </div>
+      </div>
+      
+      @if (formError()) {
+         <div class="px-6 py-5 bg-red-50 border-l-4 border-red-500 text-red-700 text-[10px] font-black uppercase tracking-widest animate-in fade-in slide-in-from-top flex items-center gap-4 rounded-r-[7px]">
+            <i class="pi pi-exclamation-triangle text-lg"></i>
+            <span class="leading-relaxed">{{ formError() }}</span>
+         </div>
+       }
+
+      <form #userFormRef="ngForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-10">
+        
+        <div class="flex flex-col gap-10">
+          <p-floatLabel>
+            <input pInputText id="username" [ngModel]="username()" (ngModelChange)="username.set($event)" name="username" required [disabled]="isEditMode()" class="w-full !rounded-[7px]" />
+            <label for="username" class="!font-black !tracking-tighter uppercase !text-[9px]">Username ID *</label>
+          </p-floatLabel>
+
+          <p-floatLabel>
+            <input pInputText id="email" [ngModel]="email()" (ngModelChange)="email.set($event)" name="email" type="email" class="w-full !rounded-[7px]" />
+            <label for="email" class="!font-black !tracking-tighter uppercase !text-[9px]">Contact Email Address</label>
+          </p-floatLabel>
+
+          <div class="grid grid-cols-2 gap-4">
+            <p-floatLabel>
+              <input pInputText id="firstName" [ngModel]="firstName()" (ngModelChange)="firstName.set($event)" name="firstName" class="w-full !rounded-[7px]" />
+              <label for="firstName" class="!font-black !tracking-tighter uppercase !text-[9px]">Given Name</label>
+            </p-floatLabel>
+            <p-floatLabel>
+              <input pInputText id="lastName" [ngModel]="lastName()" (ngModelChange)="lastName.set($event)" name="lastName" class="w-full !rounded-[7px]" />
+              <label for="lastName" class="!font-black !tracking-tighter uppercase !text-[9px]">Surname</label>
+            </p-floatLabel>
+          </div>
+
+          <p-floatLabel>
+            <div class="flex items-center gap-3">
+              <p-password 
+                  id="password"
+                  [ngModel]="password()" 
+                  (ngModelChange)="password.set($event)" 
+                  name="password" 
+                  [toggleMask]="true" 
+                  [feedback]="true" 
+                  class="flex-1 w-full"
+                  inputStyleClass="w-full !rounded-[7px]"
+                  promptLabel="Identity Credentials"
+              ></p-password>
+              <p-button icon="pi pi-bolt" 
+                        pRipple
+                        (onClick)="generatePassword()" 
+                        pTooltip="Auto Assign"
+                        styleClass="h-14 w-14 !bg-blue-600 !text-white !rounded-[7px] shadow-xl shadow-blue-100"></p-button>
+            </div>
+            <label for="password" class="!font-black !tracking-tighter uppercase !text-[9px]">Access Passphrase</label>
+          </p-floatLabel>
+        </div>
+
+        <div class="flex flex-col gap-6">
+          <div class="flex items-center justify-between p-7 bg-blue-50/10 rounded-[7px] border border-blue-100 shadow-sm">
+            <div class="flex flex-col">
+              <span class="text-sm font-black text-slate-800 uppercase tracking-tighter leading-none mb-1">Verify Identity</span>
+              <span class="text-[10px] uppercase font-black text-slate-500 tracking-widest mt-1">Pre-Verify authority in the vault</span>
+            </div>
+            <p-toggleSwitch [ngModel]="emailVerified()" (ngModelChange)="emailVerified.set($event)" name="emailVerified"></p-toggleSwitch>
+          </div>
+
+          <div class="flex items-center justify-between p-7 bg-slate-50/50 rounded-[7px] border border-blue-50 shadow-sm">
+            <div class="flex flex-col">
+              <span class="text-sm font-black text-slate-800 uppercase tracking-tighter leading-none mb-1">Status Active</span>
+              <span class="text-[10px] uppercase font-black text-slate-500 tracking-widest mt-1">Realm session access</span>
+            </div>
+            <p-toggleSwitch [ngModel]="enabled()" (ngModelChange)="enabled.set($event)" name="enabled"></p-toggleSwitch>
+          </div>
+        </div>
+
+        <div class="space-y-4">
+          <span class="text-[9px] font-black uppercase tracking-[0.4em] text-slate-500 ml-1">Authorization Scope</span>
+          <div class="flex flex-wrap gap-2.5">
+            @for (role of store.allRealmRoles(); track role.id) {
+              <div (click)="toggleRole(role.name)" 
+                   class="cursor-pointer px-4 py-2 rounded-[5px] border-2 text-[9px] font-black uppercase tracking-widest transition-all hover:scale-105 active:scale-95"
+                   [class.bg-blue-600]="selectedRoles().has(role.name)"
+                   [class.text-white]="selectedRoles().has(role.name)"
+                   [class.border-blue-600]="selectedRoles().has(role.name)"
+                   [class.bg-white]="!selectedRoles().has(role.name)"
+                   [class.text-slate-500]="!selectedRoles().has(role.name)"
+                   [class.border-blue-50]="!selectedRoles().has(role.name)"
+              >
+                {{ role.name }}
+              </div>
+            }
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-4 pt-8 border-t border-blue-50">
+          <p-button 
+              type="submit" 
+              [label]="isEditMode() ? 'SAVE IDENTITY' : 'PROVISION ACCOUNT'" 
+              [disabled]="!userFormRef.form.valid || store.isLoading()"
+              pRipple
+              styleClass="w-full !py-4.5 !rounded-[7px] !font-black !uppercase !tracking-[0.2em] !bg-blue-600 hover:!bg-blue-700"
+          ></p-button>
+          
+          @if (isEditMode()) {
+            <p-button label="Discard Edit" [text]="true" (onClick)="cancelEdit()" pRipple styleClass="w-full !rounded-[7px] !py-3 !font-black !uppercase !tracking-widest !text-[9px] !text-slate-400"></p-button>
+          }
+        </div>
+      </form>
+    </div>
+
+    <!-- ULTRA-SHARP BLUE DATA TABLE (7px) -->
+    <div class="glass-surface rounded-[7px] overflow-hidden overflow-x-hidden border border-blue-50 shadow-2xl shadow-blue-100/20 h-fit bg-white animate-in fade-in slide-in-from-right duration-700 delay-500">
+      <div class="p-10 border-b border-blue-50 flex flex-col md:flex-row md:items-center justify-between bg-blue-50/10 gap-6">
+        <div class="flex flex-col gap-1">
+           <h2 class="text-3xl font-black text-slate-900 tracking-tighter uppercase leading-none">Vault Registry</h2>
+           <span class="text-xs font-bold text-slate-400 tracking-tight">Active enrollment list via Keycloak Management Gate</span>
+        </div>
+        
+        <!-- FLUID SEARCH FIELD -->
+        <p-iconField iconPosition="left" class="w-full md:w-80 flex items-center relative">
+          <p-inputIcon styleClass="pi pi-search text-blue-400"></p-inputIcon>
+          <input type="text" pInputText [ngModel]="searchQuery()" (ngModelChange)="searchQuery.set($event)" placeholder="Search identity registry..." class="!bg-white !border-blue-100/50 !text-slate-900 !rounded-[7px] w-full !py-3 font-semibold !pl-12 !pr-10" />
+          @if (searchQuery()) {
+            <i class="pi pi-times absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer text-slate-300 hover:text-red-500 transition-colors z-10" 
+               (click)="searchQuery.set('')" pTooltip="Clear Search"></i>
+          }
+        </p-iconField>
+      </div>
+
+      <div class="animate-in fade-in duration-500">
+        @if (store.isLoading() && store.users().length === 0) {
+          <!-- SKELETON PERFORMANCE VIEW -->
+          <div class="p-10 space-y-8">
+            <div class="flex items-center gap-6" *ngFor="let i of [1,2,3,4]">
+               <p-skeleton shape="circle" size="4rem" styleClass="!bg-blue-50/50"></p-skeleton>
+               <div class="flex-1 space-y-3">
+                  <p-skeleton width="30%" height="1rem" styleClass="!bg-blue-50/50"></p-skeleton>
+                  <p-skeleton width="50%" height="0.85rem" styleClass="!bg-blue-50/50"></p-skeleton>
+               </div>
+               <p-skeleton width="80px" height="2rem" styleClass="!bg-blue-50/50"></p-skeleton>
+            </div>
+          </div>
+        } @else {
+          <p-table [value]="filteredUsers()" 
+                   [responsiveLayout]="'scroll'" 
+                   styleClass="p-datatable-lg"
+                   [rowHover]="true">
+            <ng-template pTemplate="header">
+              <tr>
+                <th class="!pl-10 !py-8 !text-slate-500 !text-[9px] !font-black !uppercase !tracking-[0.4em]">Context</th>
+                <th class="!text-slate-500 !text-[9px] !font-black !uppercase !tracking-[0.4em]">ID Profile</th>
+                <th class="!text-slate-500 !text-[9px] !font-black !uppercase !tracking-[0.4em]">Security State</th>
+                <th class="text-center !pr-10 !text-slate-500 !text-[9px] !font-black !uppercase !tracking-[0.4em]">Authorities</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-user>
+              <tr class="transition-all hover:bg-blue-50/30 border-b border-blue-50/50 last:border-b-0 group">
+                <td class="!py-10 !pl-10">
+                  <div class="flex items-center gap-5">
+                    <div class="w-14 h-14 rounded-[7px] bg-slate-50 border border-blue-50 text-blue-700 font-black flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition-all duration-300 shadow-sm relative">
+                      {{ user.username.charAt(0).toUpperCase() }}
+                      <div class="absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-4 border-white animate-pulse" [class.bg-emerald-500]="user.enabled" [class.bg-red-500]="!user.enabled"></div>
+                    </div>
+                    <div class="flex flex-col">
+                      <div class="flex items-center gap-2">
+                        <span class="text-lg font-black text-slate-800 leading-none uppercase tracking-tight">{{ user.username }}</span>
+                        @if (user.emailVerified) {
+                           <i class="pi pi-verified text-blue-500 text-xs animate-pulse" pTooltip="Identity Pre-Verified"></i>
+                        }
+                      </div>
+                      <span class="text-[9px] font-black text-blue-500 tracking-[0.3em] mt-1.5 uppercase leading-none">{{ user.id.substring(0, 15) }}...</span>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="flex flex-col gap-1">
+                    <span class="text-sm font-black text-slate-600 uppercase leading-none tracking-tight">{{ user.firstName || '-' }} {{ user.lastName }}</span>
+                    <span class="text-xs font-bold text-slate-400 italic font-mono">{{ user.email || 'AUTH.SYSTEM.DEFAULT' }}</span>
+                  </div>
+                </td>
+                <td>
+                  <div class="flex flex-col gap-2">
+                     <p-tag [severity]="user.emailVerified ? 'info' : 'warn'" [value]="user.emailVerified ? 'VERIFIED' : 'PENDING'" styleClass="!text-[8px] !font-black !tracking-[0.2em] !py-1 !px-3 !rounded-[4px]"></p-tag>
+                     <p-tag [severity]="user.enabled ? 'success' : 'danger'" [value]="user.enabled ? 'ACTIVE' : 'LOCKED'" styleClass="!text-[8px] !font-black !tracking-[0.2em] !py-1 !px-3 !rounded-[4px]"></p-tag>
+                  </div>
+                </td>
+                <td class="text-center !pr-10">
+                  <!-- RAPID ACTION SECURITY GROUP -->
+                  <div class="flex items-center justify-center gap-2">
+                    <p-button icon="pi pi-user-edit" 
+                            [text]="true" 
+                            pTooltip="Edit Identity"
+                            (onClick)="editUser(user)"
+                            styleClass="!w-10 !h-10 hover:!bg-blue-600 hover:!text-white transition-all"></p-button>
+                    <p-button [icon]="user.enabled ? 'pi pi-lock' : 'pi pi-lock-open'" 
+                            [text]="true" 
+                            [severity]="user.enabled ? 'danger' : 'success'"
+                            [pTooltip]="user.enabled ? 'Lock Access' : 'Unlock Access'"
+                            (onClick)="toggleUserLock(user)"
+                            styleClass="!w-10 !h-10 hover:!bg-white shadow-sm transition-all"></p-button>
+                    <p-button icon="pi pi-key" 
+                            [text]="true" 
+                            pTooltip="Reset Credentials"
+                            (onClick)="resetUserPassword(user)"
+                            styleClass="!w-10 !h-10 hover:!bg-amber-50 hover:!text-amber-600 transition-all"></p-button>
+                  </div>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        }
+      </div>
+    </div>
+
+  </div>
+</div>

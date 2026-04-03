@@ -1,0 +1,107 @@
+:host {
+  display: block;
+}
+
+.card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+  padding: 2.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.user-info h2 {
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+  color: #1a202c;
+}
+
+.user-info h2 span {
+  color: #3182ce;
+}
+
+.user-info p {
+  color: #4a5568;
+  margin-bottom: 1.5rem;
+}
+
+.quick-nav {
+  margin-bottom: 2.5rem;
+}
+
+.nav-manage-btn {
+  background: #3182ce;
+  color: white;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 6px rgba(49, 130, 206, 0.2);
+}
+
+.nav-manage-btn:hover {
+  background: #2b6cb0;
+  transform: translateX(4px);
+  box-shadow: 0 6px 12px rgba(49, 130, 206, 0.3);
+}
+
+.roles-section h3 {
+  font-size: 1rem;
+  color: #4a5568;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.pill {
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.user-role {
+  background: #ebf8ff;
+  color: #2b6cb0;
+  border: 1px solid #bee3f8;
+}
+
+.token-debug {
+  background: #f7fafc;
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin-top: 2rem;
+  border: 1px solid #edf2f7;
+}
+
+.token-debug h3 {
+  margin-top: 0;
+  font-size: 0.9rem;
+  color: #2d3748;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+li {
+  font-size: 0.9rem;
+  color: #718096;
+  margin-bottom: 0.5rem;
+}
+
+li strong {
+  color: #4a5568;
+  width: 120px;
+  display: inline-block;
+}

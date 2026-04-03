@@ -1,3 +1,118 @@
-/* You can add global styles to this file, and also import other style files */
+@import "tailwindcss";
+@import "tailwindcss-primeui";
+@import "primeicons/primeicons.css";
 
-@import 'tailwindcss';
+/* ULTIMATE PROFESSIONAL BLUE MATERIAL THEME */
+:root {
+  --primary-color: #2563eb; /* Azure Blue 600 */
+  --primary-color-text: #ffffff;
+  --surface-ground: #f8fafc; /* Slate 50 */
+  --surface-section: #ffffff;
+  --surface-card: #ffffff;
+  --border-radius: 7px; /* Sharp Industrial 7px */
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background: radial-gradient(circle at bottom left, #f1f5f9, #f8fafc);
+  color: #0f172a; 
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Sharp Card Elevation with High-Fidelity Depth */
+.glass-surface {
+  @apply bg-white border border-blue-100 shadow-2xl shadow-blue-500/5 rounded-[7px]; 
+}
+
+.luminescent-card {
+  @apply bg-white border border-blue-100 shadow-md shadow-blue-100/20 rounded-[7px];
+}
+
+/* High-Fidelity Input Styling (ULTRA-SHARP + DEPTH) */
+.p-inputtext, .p-password-input {
+  @apply !bg-slate-50/50 !border-slate-200 !text-slate-900 focus:!bg-white focus:!border-blue-600 focus:!ring-1 focus:!ring-blue-50 transition-all !rounded-[7px] !py-4 !px-6 shadow-inner;
+}
+
+.p-button {
+  @apply !rounded-[7px] !py-4 !px-8 !font-black !uppercase !tracking-widest !transition-all active:!scale-95 !shadow-xl !shadow-blue-500/10;
+}
+
+.p-datatable {
+  @apply !rounded-[7px] !overflow-hidden !border-none !bg-white;
+}
+
+.p-datatable .p-datatable-header {
+  @apply !bg-blue-50/10 !border-none !py-10 !px-12 !text-slate-900;
+}
+
+.p-datatable .p-datatable-tbody > tr {
+  @apply !bg-white !text-slate-700 !transition-all hover:!bg-blue-50/20;
+}
+
+/* IRONCLAD REGISTRY STABILITY: Suppress flickering horizontal scroll-states */
+.p-datatable-wrapper {
+  overflow-x: hidden !important;
+}
+
+.p-datatable .p-datatable-thead > tr > th {
+  @apply !bg-slate-50/80 !text-slate-500 !text-[9px] !font-black !uppercase !tracking-[0.4em] !py-8;
+}
+
+/* Ironclad Floating Label Architecture (Modern :has Detection) */
+p-floatlabel {
+  @apply block relative mt-2;
+}
+
+p-floatlabel label {
+  @apply !text-slate-500 !font-black !uppercase !tracking-widest !text-[12px] !transition-all !duration-300;
+  position: absolute !important;
+  top: 50% !important; 
+  transform: translateY(-50%) !important;
+  left: 1.5rem !important;
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* Force float when focused or when text is present (using :has for nested inputs) */
+p-floatlabel:has(.p-inputwrapper-focus) label,
+p-floatlabel:has(.p-inputwrapper-filled) label,
+p-floatlabel:has(input:focus) label,
+p-floatlabel:has(input:not(:placeholder-shown)) label,
+p-floatlabel:has(.p-password-input:not(:placeholder-shown)) label {
+  @apply !text-blue-600 !bg-white !px-3 !font-black;
+  top: 0 !important; /* Move to the top and sit on the border */
+  left: 1.25rem !important;
+  transform: translateY(-50%) scale(1.1) !important; /* UPSCALED FOR AUDIT CLARITY */
+  z-index: 20;
+}
+
+/* Specific fix for PrimeNG component height alignment */
+.p-password-input {
+  @apply !w-full !rounded-[7px] !px-6 !py-5.5;
+}
+
+.p-inputtext {
+  @apply !rounded-[7px] !px-6 !py-5.5;
+}
+
+/* Popover Shadow Refinement (Blue-Sharp) */
+.animate-dropdown {
+  @apply rounded-[10px] shadow-2xl ring-2 ring-blue-500/5;
+  animation: slideDownIn 0.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes slideDownIn {
+  from { opacity: 0; transform: translateY(-10px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+/* EXECUTIVE TOOLTIP SIGNATURE (INDUSTRIAL) */
+.p-tooltip {
+  @apply !z-[10000];
+}
+
+.p-tooltip .p-tooltip-text {
+  @apply !bg-slate-900 !text-white !font-black !px-4 !py-2 !rounded-[7px] !text-[10px] !uppercase !tracking-widest !shadow-2xl;
+}

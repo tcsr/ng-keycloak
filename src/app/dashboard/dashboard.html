@@ -1,0 +1,116 @@
+<div class="w-full py-12 px-6 sm:px-8 lg:px-10 min-h-screen">
+  
+  @if (store.authenticated()) {
+    <!-- EXECUTIVE HEADER -->
+    <div class="mb-14 flex items-center justify-between animate-in fade-in slide-in-from-top duration-1000">
+      <div class="flex flex-col gap-3">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-1.5 bg-blue-600 rounded-sm shadow-lg shadow-blue-100"></div>
+          <span class="text-[10px] font-black uppercase text-blue-400 tracking-[0.4em]">Administrative Hub</span>
+        </div>
+        <h1 class="text-6xl font-black text-slate-900 tracking-tighter uppercase leading-none">Command Center</h1>
+        <div class="flex items-center gap-3 mt-2">
+           <div class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></div>
+           <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Vault Status: OPTIMAL</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+      
+      <!-- KPI MATRIX (STAGGERED) -->
+      <div class="lg:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-6 animate-in fade-in slide-in-from-left duration-700 delay-300">
+         
+         <div class="bg-white border border-blue-50 rounded-[7px] p-8 shadow-2xl shadow-blue-100/30 flex flex-col justify-between hover:scale-105 transition-all group">
+            <span class="text-[9px] font-black uppercase text-blue-500 tracking-[0.3em] mb-4">Identity Pulse</span>
+            <div class="flex items-end justify-between">
+               <span class="text-6xl font-black text-blue-600 tracking-tighter leading-none group-hover:scale-110 transition-transform">{{ store.userCount() }}</span>
+               <div class="w-10 h-10 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center"><i class="pi pi-users"></i></div>
+            </div>
+            <span class="text-[10px] font-bold text-slate-500 mt-4 uppercase">Enrolled Identities</span>
+         </div>
+
+         <div class="bg-white border border-purple-50 rounded-[7px] p-8 shadow-2xl shadow-purple-100/30 flex flex-col justify-between hover:scale-105 transition-all group">
+            <span class="text-[9px] font-black uppercase text-purple-500 tracking-[0.3em] mb-4">Authority Scope</span>
+            <div class="flex items-end justify-between">
+               <span class="text-6xl font-black text-purple-600 tracking-tighter leading-none group-hover:scale-110 transition-transform">{{ store.rolesCount() }}</span>
+               <div class="w-10 h-10 bg-purple-50 text-purple-600 rounded-full flex items-center justify-center"><i class="pi pi-shield"></i></div>
+            </div>
+            <span class="text-[10px] font-bold text-slate-500 mt-4 uppercase">Realm Definitions</span>
+         </div>
+
+         <div class="bg-gradient-to-br from-emerald-600 to-teal-500 border-none rounded-[7px] p-8 shadow-2xl shadow-emerald-100/50 flex flex-col justify-between hover:scale-105 transition-all group overflow-hidden relative">
+            <div class="absolute -right-4 -top-4 w-24 h-24 bg-white/10 rounded-full blur-2xl"></div>
+            <span class="text-[9px] font-black uppercase text-emerald-100 tracking-[0.3em] mb-4">System Health</span>
+            <div class="flex items-end justify-between">
+               <span class="text-6xl font-black text-white tracking-tighter leading-none group-hover:scale-110 transition-transform">99<span class="text-2xl text-white/50">%</span></span>
+               <div class="w-10 h-10 bg-white/20 text-white rounded-full flex items-center justify-center backdrop-blur-sm shadow-xl shadow-emerald-700/20"><i class="pi pi-heart-fill"></i></div>
+            </div>
+            <span class="text-[10px] font-bold text-white/80 mt-4 uppercase">Secure Handshake OK</span>
+         </div>
+
+      </div>
+
+      <!-- HOLOGRAPHIC ADMIN CARD -->
+      <div class="bg-white border-2 border-blue-600 rounded-[7px] p-10 shadow-2xl shadow-blue-100 flex flex-col items-center text-center animate-in fade-in slide-in-from-right duration-700 delay-500">
+         <div class="w-24 h-24 bg-blue-50 border border-blue-100 rounded-full flex items-center justify-center text-slate-900 text-4xl font-black shadow-xl shadow-blue-100 mb-6 transition-transform hover:scale-110">
+            {{ store.avatarInitials() }}
+         </div>
+         <h3 class="text-2xl font-black text-slate-900 tracking-tighter uppercase leading-none mb-1 capitalize">{{ store.fullName() }}</h3>
+         <span class="text-[10px] font-black text-blue-400 tracking-[0.4em] uppercase mb-8">Executive Admin</span>
+         
+         <div class="w-full flex flex-wrap gap-2 justify-center py-6 border-t border-blue-50">
+            @for (role of store.userRoles(); track role) {
+              <span class="px-3 py-1.5 bg-blue-50 text-blue-700 text-[9px] font-black rounded-sm border border-blue-100 uppercase tracking-tighter">{{ role }}</span>
+            }
+         </div>
+      </div>
+
+      <!-- STRATEGIC ACTION TILES -->
+      <div class="lg:col-span-3 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mt-4 animate-in fade-in slide-in-from-bottom duration-700 delay-700">
+         
+         <div routerLink="/users" class="group cursor-pointer bg-white border border-slate-100 p-8 rounded-[7px] transition-all hover:border-blue-500 hover:shadow-2xl hover:shadow-blue-100/50">
+            <div class="w-12 h-12 bg-blue-600 text-white rounded-[7px] flex items-center justify-center text-xl mb-6 shadow-xl shadow-blue-100 group-hover:scale-110 transition-transform"><i class="pi pi-users"></i></div>
+            <h4 class="text-xl font-black text-slate-900 tracking-tighter uppercase leading-none mb-2">Vault Registry</h4>
+            <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest leading-relaxed">Open provisioning gate and audit identities.</p>
+         </div>
+
+         <div routerLink="/reports" class="group cursor-pointer bg-white border border-slate-100 p-8 rounded-[7px] transition-all hover:border-purple-500 hover:shadow-2xl hover:shadow-purple-100/50">
+            <div class="w-12 h-12 bg-purple-600 text-white rounded-[7px] flex items-center justify-center text-xl mb-6 shadow-xl shadow-purple-100 group-hover:scale-110 transition-transform"><i class="pi pi-chart-bar"></i></div>
+            <h4 class="text-xl font-black text-slate-900 tracking-tighter uppercase leading-none mb-2">Security Analytics</h4>
+            <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest leading-relaxed">Intelligence reports and threat vectors.</p>
+         </div>
+
+         <div routerLink="/governance" class="group cursor-pointer bg-white border border-slate-100 p-8 rounded-[7px] transition-all hover:border-slate-900 hover:shadow-2xl hover:shadow-slate-200">
+            <div class="w-12 h-12 bg-slate-900 text-white rounded-[7px] flex items-center justify-center text-xl mb-6 shadow-xl shadow-slate-100 group-hover:scale-110 transition-transform"><i class="pi pi-shield"></i></div>
+            <h4 class="text-xl font-black text-slate-900 tracking-tighter uppercase leading-none mb-2">Module Lockdown</h4>
+            <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest leading-relaxed">Configure governance and role mapping.</p>
+         </div>
+
+         <div (click)="store.loadInitialData(true)" class="group cursor-pointer bg-blue-50 border border-blue-100 p-8 rounded-[7px] transition-all hover:bg-blue-600 hover:text-white hover:border-blue-600 hover:shadow-2xl hover:shadow-blue-200">
+            <div class="w-12 h-12 bg-white text-blue-600 rounded-[7px] flex items-center justify-center text-xl mb-6 shadow-xl shadow-blue-50 group-hover:rotate-180 transition-transform"><i class="pi pi-refresh"></i></div>
+            <h4 class="text-xl font-black tracking-tighter uppercase leading-none mb-2">Sync Vault</h4>
+            <p class="text-[10px] font-bold opacity-60 uppercase tracking-widest leading-relaxed">Force refresh of identity and security definitions.</p>
+         </div>
+
+      </div>
+
+    </div>
+  } @else {
+     <!-- VAULT ENTRY GATE (UNAUTHENTICATED) -->
+     <div class="h-[60vh] flex flex-col items-center justify-center animate-in fade-in zoom-in duration-700">
+        <div class="max-w-xl w-full bg-white border border-blue-50 rounded-[7px] p-16 shadow-2xl shadow-blue-100/50 flex flex-col items-center text-center">
+           <div class="w-24 h-24 bg-blue-600/10 rounded-[7px] flex items-center justify-center text-blue-600 text-4xl mb-10 shadow-2xl shadow-blue-100/20">
+              <i class="pi pi-lock"></i>
+           </div>
+           <span class="text-[10px] font-black uppercase text-blue-400 tracking-[0.5em] mb-4">Vault Isolation Active</span>
+           <h1 class="text-5xl font-black text-slate-900 tracking-tighter uppercase leading-tight mb-6">Session Required</h1>
+           <p class="text-slate-500 font-bold text-lg mb-12">Establish a secure administrative handshake with the Keycloak Identity Provider to access the Command Center.</p>
+           
+           <button (click)="store.login()" class="px-10 py-5 bg-blue-600 hover:bg-blue-700 text-white font-black uppercase tracking-widest text-[12px] rounded-[7px] shadow-2xl shadow-blue-200 transition-all hover:scale-105 active:scale-95 flex items-center gap-4">
+              <i class="pi pi-user-plus"></i> ESTABLISH SESSION
+           </button>
+        </div>
+     </div>
+  }
+</div>

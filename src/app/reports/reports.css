@@ -1,0 +1,209 @@
+:host {
+  display: block;
+  font-family: Inter, system-ui, -apple-system, sans-serif;
+  background: #f4f7f9;
+  min-height: 100vh;
+  padding: 2rem;
+}
+
+.reports-container {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.header h1 {
+  font-size: 2.5rem;
+  color: #1a202c;
+  margin-bottom: 0.5rem;
+}
+
+.header p {
+  color: #718096;
+}
+
+/* Metric Cards */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.metric-card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  transition: transform 0.2s;
+}
+
+.metric-card:hover {
+  transform: translateY(-5px);
+}
+
+.metric-icon {
+  width: 54px;
+  height: 54px;
+  background: #f7fafc;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+}
+
+.metric-info h3 {
+  font-size: 0.85rem;
+  color: #718096;
+  text-transform: uppercase;
+  font-weight: 700;
+  margin: 0;
+}
+
+.metric-info .value {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: #2d3748;
+  margin: 0.25rem 0;
+}
+
+.change {
+  font-size: 0.75rem;
+  color: #a0aec0;
+  font-weight: 600;
+}
+
+.change.positive {
+  color: #48bb78;
+}
+
+/* Charts Sections */
+.charts-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 2rem;
+}
+
+.card {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+}
+
+.card h2 {
+  font-size: 1.25rem;
+  color: #2d3748;
+  margin-bottom: 0.25rem;
+}
+
+.subtitle {
+  color: #a0aec0;
+  font-size: 0.85rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Bar Chart */
+.bar-chart {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  height: 250px;
+  padding: 2rem 0;
+  gap: 1rem;
+}
+
+.bar-column {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.bar {
+  width: 70%;
+  background: linear-gradient(180deg, #3182ce 0%, #63b3ed 100%);
+  border-radius: 6px 6px 0 0;
+  position: relative;
+  transition: height 0.8s cubic-bezier(0.17, 0.67, 0.83, 0.67);
+  animation: barSlideUp 1s ease-out forwards;
+}
+
+@keyframes barSlideUp {
+  from { height: 0; }
+}
+
+.bar-value {
+  position: absolute;
+  top: -24px;
+  width: 100%;
+  text-align: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #4a5568;
+}
+
+.bar-label {
+  margin-top: 1rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #a0aec0;
+}
+
+/* Security Pulse */
+.pulse-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.pulse-item {
+  display: grid;
+  grid-template-columns: 1fr 2fr 45px;
+  align-items: center;
+  gap: 1rem;
+}
+
+.pulse-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #4a5568;
+}
+
+.pulse-progress {
+  height: 8px;
+  background: #f7fafc;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 1s ease;
+}
+
+.progress-fill.green { background: #48bb78; }
+.progress-fill.blue { background: #3182ce; }
+.progress-fill.yellow { background: #ecc94b; }
+.progress-fill.red { background: #f56565; }
+
+.pulse-value {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #2d3748;
+}
+
+@media (max-width: 1024px) {
+  .charts-grid {
+    grid-template-columns: 1fr;
+  }
+}

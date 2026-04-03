@@ -1,0 +1,156 @@
+<div class="w-full py-12 px-6 sm:px-8 lg:px-10 min-h-screen">
+  
+  <!-- ANALYTICS HEADER (7px SHARP) -->
+  <div class="mb-14 flex flex-col xl:flex-row xl:items-end justify-between gap-10 animate-in fade-in slide-in-from-top duration-1000">
+    <div class="flex flex-col gap-3">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-1.5 bg-blue-600 rounded-sm shadow-lg shadow-blue-100"></div>
+        <span class="text-[10px] font-black uppercase text-blue-400 tracking-[0.4em]">Audit Intelligence</span>
+      </div>
+      <h1 class="text-6xl font-black text-slate-900 tracking-tighter uppercase leading-none">Security Reports</h1>
+      <p class="text-slate-500 font-bold text-lg max-w-xl">Deep-dive into realm identity trends, anomalies, and account health with graphic analytics.</p>
+    </div>
+
+    <!-- RAPID INSIGHTS KPIs -->
+    <div class="flex items-center gap-6 animate-in fade-in slide-in-from-right duration-700 delay-300">
+       <div class="bg-white border-2 border-blue-50 shadow-2xl shadow-blue-100/50 rounded-[7px] px-12 py-8 flex items-center gap-12 transition-all hover:scale-105 hover:shadow-2xl hover:shadow-blue-100/70 group">
+          <div class="flex flex-col text-center">
+             <span class="text-[9px] font-black uppercase text-blue-300 tracking-[0.3em] mb-2 group-hover:text-blue-500 transition-colors">New Enrolled</span>
+             <span class="text-5xl font-black text-blue-600 tracking-tighter leading-none group-hover:scale-110 transition-transform">
+                {{ enrolledCount() < 10 ? '0' + enrolledCount() : enrolledCount() }}
+             </span>
+          </div>
+          <div class="h-10 w-px bg-blue-50"></div>
+          <div class="flex flex-col text-center">
+             <span class="text-[9px] font-black uppercase text-red-300 tracking-[0.3em] mb-2 group-hover:text-red-500 transition-colors">Total Locked</span>
+             <span class="text-5xl font-black text-red-500 tracking-tighter leading-none group-hover:scale-110 transition-transform">
+                {{ lockedCount() < 10 ? '0' + lockedCount() : lockedCount() }}
+             </span>
+          </div>
+          <div class="h-10 w-px bg-blue-50"></div>
+          <div class="flex flex-col text-center">
+             <span class="text-[9px] font-black uppercase text-amber-500 tracking-[0.3em] mb-2 group-hover:text-amber-600 transition-colors">Total Pending</span>
+             <span class="text-5xl font-black text-amber-500 tracking-tighter leading-none group-hover:scale-110 transition-transform">
+                {{ pendingCount() < 10 ? '0' + pendingCount() : pendingCount() }}
+             </span>
+          </div>
+       </div>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 xl:grid-cols-3 gap-10">
+    
+    <!-- GROWTH AREA CHART (SHARP 7px) -->
+    <div class="xl:col-span-2 bg-white glass-surface p-10 rounded-[7px] shadow-2xl shadow-blue-100/20 border border-blue-50 animate-in fade-in slide-in-from-bottom duration-700 delay-500">
+       <div class="flex items-center justify-between mb-10">
+          <div class="flex flex-col">
+             <h2 class="text-2xl font-black text-slate-900 uppercase tracking-tighter">Enrollment Trends</h2>
+             <span class="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">6-Month Realm Growth Metrics</span>
+          </div>
+          <p-badge value="LIVE" severity="success" class="font-black !px-2"></p-badge>
+       </div>
+       <p-chart type="line" [data]="healthData()" [options]="chartOptions()" class="w-full h-80"></p-chart>
+    </div>
+
+    <!-- NEW: ANOMALY RADAR CHART (SHARP 7px) -->
+    <div class="bg-white glass-surface p-10 rounded-[7px] shadow-2xl shadow-blue-100/20 border border-blue-50 animate-in fade-in slide-in-from-right duration-700 delay-700">
+       <div class="flex items-center gap-5 mb-10">
+          <div class="w-12 h-12 bg-blue-600 shadow-xl shadow-blue-200 rounded-[7px] flex items-center justify-center text-white text-lg">
+             <i class="pi pi-shield"></i>
+          </div>
+          <div class="flex flex-col">
+             <h2 class="text-xl font-black text-slate-900 uppercase tracking-tighter">Anomaly Radar</h2>
+             <span class="text-[9px] font-black text-blue-400 uppercase tracking-widest leading-none mt-1">Threat Vector Mapping</span>
+          </div>
+       </div>
+       <p-chart type="radar" [data]="anomalyData()" [options]="radarOptions()" class="w-full h-64"></p-chart>
+       <div class="mt-8 p-4 bg-slate-50 rounded-[7px] border border-blue-50 text-center">
+          <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Global Risk Factor</span>
+          <h3 class="text-2xl font-black text-emerald-500 mt-1 uppercase tracking-tighter">Low Intensity</h3>
+       </div>
+    </div>
+
+    <!-- DISTRIBUTION DOUGHNUT (SHARP 7px) -->
+    <div class="bg-white glass-surface p-10 rounded-[7px] shadow-2xl shadow-blue-100/20 border border-blue-50">
+       <div class="flex items-center gap-5 mb-10">
+          <div class="w-12 h-12 bg-purple-600 shadow-xl shadow-purple-100 rounded-[7px] flex items-center justify-center text-white text-lg">
+             <i class="pi pi-chart-pie"></i>
+          </div>
+          <div class="flex flex-col">
+             <h2 class="text-xl font-black text-slate-900 uppercase tracking-tighter">Scope Context</h2>
+             <span class="text-[9px] font-black text-purple-400 uppercase tracking-widest leading-none mt-1">Authority Distribution</span>
+          </div>
+       </div>
+       <p-chart type="doughnut" [data]="identityData()" [options]="chartOptions()" class="w-full h-56"></p-chart>
+       <div class="mt-8 grid grid-cols-2 gap-3">
+          <div class="p-4 bg-slate-50 rounded-[7px] border border-blue-50">
+             <span class="text-[9px] font-black text-slate-400 uppercase">Primary Group</span>
+             <p class="text-xs font-black text-slate-800 mt-1">ARCHITECTS</p>
+          </div>
+          <div class="p-4 bg-slate-50 rounded-[7px] border border-blue-50">
+             <span class="text-[9px] font-black text-slate-400 uppercase">Registry Health</span>
+             <p class="text-xs font-black text-emerald-600 mt-1 uppercase">SYNC_OK</p>
+          </div>
+       </div>
+    </div>
+
+    <!-- AUDIT REGISTRY REGISTRY ACTIVITY (SHARP 7px) -->
+    <div class="xl:col-span-2 bg-white glass-surface rounded-[7px] overflow-hidden overflow-x-hidden border border-blue-50 shadow-2xl shadow-blue-50/20 animate-in fade-in slide-in-from-bottom duration-700 delay-1000">
+       <div class="p-10 border-b border-blue-50 flex items-center justify-between bg-blue-50/10">
+          <div class="flex flex-col">
+             <h2 class="text-3xl font-black text-slate-900 uppercase tracking-tighter leading-none mb-1">Audit Registry</h2>
+             <span class="text-xs font-bold text-slate-400 tracking-tight">Real-time log of security events and identity modifications</span>
+          </div>
+          <div class="flex items-center gap-4">
+             <button (click)="exportExcel()" class="h-14 px-6 bg-white border border-emerald-100 text-emerald-600 rounded-[7px] flex items-center justify-center gap-3 shadow-inner hover:bg-emerald-50 transition-all !cursor-pointer active:scale-95 group">
+                <i class="pi pi-file-excel text-xl"></i>
+                <span class="text-[10px] font-black uppercase tracking-widest hidden lg:inline">XLSX</span>
+             </button>
+             <button (click)="exportPdf()" class="h-14 px-6 bg-white border border-red-100 text-red-600 rounded-[7px] flex items-center justify-center gap-3 shadow-inner hover:bg-red-50 transition-all !cursor-pointer active:scale-95 group">
+                <i class="pi pi-file-pdf text-xl"></i>
+                <span class="text-[10px] font-black uppercase tracking-widest hidden lg:inline">PDF</span>
+             </button>
+          </div>
+       </div>
+
+       <p-table [value]="store.users()" [responsiveLayout]="'scroll'" styleClass="p-datatable-lg">
+          <ng-template pTemplate="header">
+             <tr>
+                <th class="!pl-10 !py-8 !text-slate-500 !text-[9px] !font-black !uppercase !tracking-[0.4em]">Event Context</th>
+                <th class="!text-slate-500 !text-[9px] !font-black !uppercase !tracking-[0.4em]">Account State</th>
+                <th class="text-center !pr-10 !text-slate-500 !text-[9px] !font-black !uppercase !tracking-[0.4em]">Event ID</th>
+             </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-user>
+             <tr class="transition-all hover:bg-slate-50/50 border-b border-blue-50/50 last:border-b-0 group">
+                <td class="!py-10 !pl-10">
+                   <div class="flex items-center gap-5">
+                      <div class="w-12 h-12 rounded-[5px] bg-blue-50 text-blue-700 font-black flex items-center justify-center">
+                         <i class="pi pi-calendar-plus text-lg"></i>
+                      </div>
+                      <div class="flex flex-col">
+                         <span class="text-sm font-black text-slate-800 uppercase tracking-tight">Identity Enrolled</span>
+                         <span class="text-[9px] font-black text-blue-300 tracking-widest mt-1 uppercase">{{ user.firstName || '' }} {{ user.lastName || '' }} ({{ user.username }})</span>
+                      </div>
+                   </div>
+                </td>
+                <td>
+                    <div class="flex items-center gap-2">
+                       <p-tag [value]="user.enabled ? 'ACTIVE' : 'LOCKED'" 
+                              [severity]="user.enabled ? 'success' : 'danger'" 
+                              styleClass="!text-[9px] !font-black !uppercase !px-3 !py-1 !rounded-[3px] !border-none"></p-tag>
+                       <p-tag [value]="user.emailVerified ? 'VERIFIED' : 'PENDING'" 
+                              [severity]="user.emailVerified ? 'info' : 'warn'" 
+                              styleClass="!text-[9px] !font-black !uppercase !px-3 !py-1 !rounded-[3px] !border-none"></p-tag>
+                    </div>
+                </td>
+                <td class="text-center !pr-10">
+                   <span class="text-[9px] font-mono font-bold text-slate-400 uppercase tracking-tighter"># {{ user.id.substring(0, 15) }}...</span>
+                </td>
+             </tr>
+          </ng-template>
+       </p-table>
+    </div>
+
+  </div>
+</div>
