@@ -76,9 +76,17 @@ export class AppComponent implements OnInit {
   }
 
   checkModuleAccess(moduleName: string): boolean {
-    const allowedRoles = this.modulePermissions()[moduleName] || [];
-    const userRoleList = this.userRoles();
-    return allowedRoles.some(role => userRoleList.includes(role));
+    const permissions = this.store.modulePermissions();
+    const allowedRoles = permissions[moduleName] || [];
+    const userRoles = this.store.userRoles();
+    const userRoleList = userRoles.map(r => String(r).toLowerCase());
+    
+    const hasAccess = allowedRoles.some(role => userRoleList.includes(role.toLowerCase()));
+
+    // CRITICAL ACL DIAGNOSTIC
+    console.log(`[ACL] ${moduleName} Check | Roles: [${userRoleList}] | Result: ${hasAccess}`);
+    
+    return hasAccess;
   }
 
   toggleMenu(event: MouseEvent) {

@@ -21,29 +21,40 @@
       </div>
 
       <!-- Navigation Linkage (7px SHARP) -->
-      <div class="hidden md:flex items-center gap-1 p-1 bg-slate-50 rounded-[10px] border border-slate-200/50 h-11">
-        <a routerLink="/dashboard" *ngIf="authenticated()" 
-           routerLinkActive="!bg-white !text-blue-600 !shadow-sm !border-blue-100" 
-           class="text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-blue-600 hover:bg-white/80 py-2.5 px-5 rounded-[7px] transition-all flex items-center gap-2 border border-transparent"
-           [routerLinkActiveOptions]="{exact: true}">
-           <i class="pi pi-th-large text-[10px]"></i> Dashboard
-        </a>
-        <a routerLink="/users" *ngIf="checkModuleAccess('Identities')" 
-           routerLinkActive="!bg-white !text-blue-600 !shadow-sm !border-blue-100" 
-           class="text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-blue-600 hover:bg-white/80 py-2.5 px-5 rounded-[7px] transition-all flex items-center gap-2 border border-transparent">
-           <i class="pi pi-users text-[10px]"></i> Identities
-        </a>
-        <a routerLink="/reports" *ngIf="checkModuleAccess('Analytics')" 
-           routerLinkActive="!bg-white !text-blue-600 !shadow-sm !border-blue-100" 
-           class="text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-blue-600 hover:bg-white/80 py-2.5 px-5 rounded-[7px] transition-all flex items-center gap-2 border border-transparent">
-           <i class="pi pi-chart-line text-[10px]"></i> Analytics
-        </a>
-        <a routerLink="/governance" *ngIf="checkModuleAccess('Governance')" 
-           routerLinkActive="!bg-white !text-blue-600 !shadow-sm !border-blue-100" 
-           class="text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-blue-600 hover:bg-white/80 py-2.5 px-5 rounded-[7px] transition-all flex items-center gap-2 border border-transparent">
-           <i class="pi pi-shield text-[10px]"></i> Governance
-        </a>
-      </div>
+      @if (authenticated()) {
+        <div class="hidden md:flex items-center gap-1 p-1 bg-slate-50 rounded-[10px] border border-slate-200/50 h-11">
+          <a routerLink="/dashboard" 
+             routerLinkActive="!bg-white !text-blue-600 !shadow-sm !border-blue-100" 
+             class="text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-blue-600 hover:bg-white/80 py-2.5 px-5 rounded-[7px] transition-all flex items-center gap-2 border border-transparent"
+             [routerLinkActiveOptions]="{exact: true}">
+             <i class="pi pi-th-large text-[10px]"></i> Dashboard
+          </a>
+
+          @if (checkModuleAccess('Identities')) {
+            <a routerLink="/users" 
+               routerLinkActive="!bg-white !text-blue-600 !shadow-sm !border-blue-100" 
+               class="text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-blue-600 hover:bg-white/80 py-2.5 px-5 rounded-[7px] transition-all flex items-center gap-2 border border-transparent">
+               <i class="pi pi-users text-[10px]"></i> Identities
+            </a>
+          }
+
+          @if (checkModuleAccess('Analytics')) {
+            <a routerLink="/reports" 
+               routerLinkActive="!bg-white !text-blue-600 !shadow-sm !border-blue-100" 
+               class="text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-blue-600 hover:bg-white/80 py-2.5 px-5 rounded-[7px] transition-all flex items-center gap-2 border border-transparent">
+               <i class="pi pi-chart-line text-[10px]"></i> Analytics
+            </a>
+          }
+
+          @if (checkModuleAccess('Governance')) {
+            <a routerLink="/governance" 
+               routerLinkActive="!bg-white !text-blue-600 !shadow-sm !border-blue-100" 
+               class="text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-blue-600 hover:bg-white/80 py-2.5 px-5 rounded-[7px] transition-all flex items-center gap-2 border border-transparent">
+               <i class="pi pi-shield text-[10px]"></i> Governance
+            </a>
+          }
+        </div>
+      }
 
       <!-- User Area Popover (7px SHARP) -->
       <div class="user-panel-wrapper relative" #userContext>

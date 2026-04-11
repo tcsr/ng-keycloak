@@ -3,7 +3,7 @@ export const environment = {
   name: 'development',
   keycloak: {
     url: 'http://localhost:8080',
-    realm: 'master',
+    realm: 'authority-vault',
     clientId: 'web'
   }
 };

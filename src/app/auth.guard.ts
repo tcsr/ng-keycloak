@@ -21,15 +21,15 @@ export const hasRoleGuard = createAuthGuard(async (route, state, authData) => {
 
   // 2. Get required roles from route data (e.g., data: { roles: ['admin', 'manager'] })
   const requiredRoles = route.data['roles'] as string[];
-  
+
   // 3. If no roles are specified, allow access (just requires authentication)
   if (!requiredRoles || requiredRoles.length === 0) {
     return true;
   }
 
-  // 4. Check if user has AT LEAST ONE of the required roles
+  // 4. Check if user has ALL of the required roles
   const userRoles = grantedRoles.realmRoles;
-  const hasAccess = requiredRoles.some(role => userRoles.includes(role));
+  const hasAccess = requiredRoles.some((role) => userRoles.includes(role));
 
   if (hasAccess) {
     return true;

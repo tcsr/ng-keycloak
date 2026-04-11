@@ -3,6 +3,8 @@ import { inject, computed, signal } from '@angular/core';
 import { KeycloakAdminService } from '../keycloak-admin.service';
 import { NotificationService } from '../notification.service';
 import Keycloak from 'keycloak-js';
+import { environment } from '../../environments/environment';
+import { MODULE_PERMISSIONS, REGISTRY_SYNC_ROLES } from '../acl.config';
 
 export interface User {
   id: string;
@@ -36,12 +38,7 @@ const initialState: AppState = {
   isLoading: false,
   error: null,
   isVaultOffline: false,
-  modulePermissions: {
-    'Dashboard': ['admin', 'manager', 'editor', 'default-roles-ng-keycloak', 'default-roles-master', 'offline_access', 'clinical_team'],
-    'Identities': ['admin', 'manager', 'editor', 'default-roles-ng-keycloak', 'default-roles-master', 'offline_access', 'clinical_team'],
-    'Analytics': ['admin', 'manager', 'editor', 'default-roles-ng-keycloak', 'default-roles-master', 'offline_access', 'clinical_team'],
-    'Governance': ['admin', 'manager', 'editor', 'default-roles-ng-keycloak', 'default-roles-master', 'offline_access', 'clinical_team']
-  }
+  modulePermissions: MODULE_PERMISSIONS
 };
 
 export const AppStore = signalStore(
@@ -77,7 +74,11 @@ export const AppStore = signalStore(
         return 'AA';
       }),
       email: computed(() => keycloak.profile?.email || keycloak.tokenParsed?.['email'] || ''),
-      userRoles: computed(() => keycloak.realmAccess?.roles || []),
+      userRoles: computed(() => {
+        const realmRoles = keycloak.realmAccess?.roles || [];
+        const clientRoles = keycloak.resourceAccess?.[environment.keycloak.clientId]?.roles || [];
+        return [...new Set([...realmRoles, ...clientRoles])];
+      }),
       userCount: computed(() => state.users().length),
       rolesCount: computed(() => state.allRealmRoles().length),
     };
@@ -124,26 +125,23 @@ export const AppStore = signalStore(
       },
 
       async loadInitialData(force = false) {
-        // VAULT GUARD: Never initiate registry handshake if session is unauthenticated
-        if (!keycloak.authenticated) {
+        if (!keycloak.authenticated) return;
+
+        const userRoles = store.userRoles().map(r => String(r).toLowerCase());
+        const isPrivileged = REGISTRY_SYNC_ROLES.some(role => userRoles.includes(role.toLowerCase()));
+        
+        if (!isPrivileged) {
+          console.log('[Vault] Access Restricted: Admin sync skipped.');
           return;
         }
 
-        // STATE LOCK: Prevent redundant syncs during hover/UI interactions
-        if (store.isLoading() || (!force && store.users().length > 3)) {
-          return;
-        }
+        console.log('[Vault] Elevation verified via ACL Config. Starting sync...');
+        if (store.isLoading() || (!force && store.users().length > 3)) return;
 
         patchState(store, { isLoading: true });
         notification.showLoader();
         
         try {
-          // HYDRATION: Check for persisted governance config first
-          const savedPerms = localStorage.getItem('authority_vault_permissions');
-          if (savedPerms) {
-            patchState(store, { modulePermissions: JSON.parse(savedPerms) });
-          }
-
           const [users, roles] = await Promise.all([
             adminService.getUsers(),
             adminService.getAllRealmRoles()

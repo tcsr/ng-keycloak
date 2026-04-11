@@ -5,7 +5,7 @@ import { ReportsComponent } from './reports/reports';
 import { GovernanceComponent } from './governance/governance';
 import { AccessDeniedComponent } from './access-denied/access-denied';
 import { hasRoleGuard } from './auth.guard'; 
-
+import { ACL_ROLES, MODULE_PERMISSIONS } from './acl.config';
 export const routes: Routes = [
   { path: 'dashboard', component: DashboardComponent },
   
@@ -14,7 +14,7 @@ export const routes: Routes = [
     path: 'users', 
     component: UsersComponent, 
     canActivate: [hasRoleGuard], 
-    data: { roles: ['admin'] } 
+    data: { roles: MODULE_PERMISSIONS['Identities'] } 
   },
 
   // MANAGER OR ADMIN ROLE
@@ -22,7 +22,7 @@ export const routes: Routes = [
     path: 'reports', 
     component: ReportsComponent, 
     canActivate: [hasRoleGuard], 
-    data: { roles: ['manager', 'admin'] } 
+    data: { roles: MODULE_PERMISSIONS['Analytics'] } 
   },
   
   // MODULE LOCKDOWN Governance (ADMIN ONLY)
@@ -30,7 +30,7 @@ export const routes: Routes = [
     path: 'governance', 
     component: GovernanceComponent, 
     canActivate: [hasRoleGuard], 
-    data: { roles: ['admin'] } 
+    data: { roles: MODULE_PERMISSIONS['Governance'] } 
   },
 
   { path: 'access-denied', component: AccessDeniedComponent },

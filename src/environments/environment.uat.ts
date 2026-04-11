@@ -3,7 +3,7 @@ export const environment = {
   name: 'uat',
   keycloak: {
     url: 'http://uat-keycloak:8080',
-    realm: 'master',
+    realm: 'authority-vault',
     clientId: 'web'
   }
 };

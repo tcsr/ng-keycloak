@@ -3,7 +3,7 @@ export const environment = {
   name: 'production',
   keycloak: {
     url: 'http://prod-keycloak:8080',
-    realm: 'master',
+    realm: 'authority-vault',
     clientId: 'web'
   }
 };
