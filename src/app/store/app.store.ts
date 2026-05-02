@@ -30,6 +30,9 @@ interface AppState {
   error: string | null;
   isVaultOffline: boolean; // CRITICAL: Only true if server/link is dead
   modulePermissions: Record<string, string[]>; // Mapping: ModuleName -> RoleNames[]
+  loginEvents: any[];
+  loginEventsLoading: boolean;
+  loginEventsError: string | null;
 }
 
 const initialState: AppState = {
@@ -38,7 +41,10 @@ const initialState: AppState = {
   isLoading: false,
   error: null,
   isVaultOffline: false,
-  modulePermissions: MODULE_PERMISSIONS
+  modulePermissions: MODULE_PERMISSIONS,
+  loginEvents: [],
+  loginEventsLoading: false,
+  loginEventsError: null
 };
 
 export const AppStore = signalStore(
@@ -79,8 +85,13 @@ export const AppStore = signalStore(
         const clientRoles = keycloak.resourceAccess?.[environment.keycloak.clientId]?.roles || [];
         return [...new Set([...realmRoles, ...clientRoles])];
       }),
+      loginSource: computed(() => {
+        // This 'login_source' comes from the Keycloak IDP Mapper we configured
+        return keycloak.tokenParsed?.['login_source'] || 'direct';
+      }),
+      isSSO: computed(() => !!keycloak.tokenParsed?.['login_source']),
       userCount: computed(() => state.users().length),
-      rolesCount: computed(() => state.allRealmRoles().length),
+      rolesCount: computed(() => state.allRealmRoles().length)
     };
   }),
 
@@ -219,31 +230,65 @@ export const AppStore = signalStore(
         }
       },
 
-      async updateUser(userId: string, user: any, roles: RealmRole[] = [], newPassword?: string) {
-        patchState(store, { isLoading: true });
-        notification.showLoader();
+       async updateUser(userId: string, user: any, roles: RealmRole[] = [], newPassword?: string) {
+         patchState(store, { isLoading: true });
+         notification.showLoader();
 
-        try {
-          await adminService.updateUser(userId, user);
-          if (newPassword) {
-            await adminService.resetPassword(userId, newPassword);
-          }
-          if (roles.length > 0) {
-            await adminService.assignRealmRolesToUser(userId, roles);
-          }
-          
-          notification.success(`User updated successfully!`);
-          
-          const updatedUsers = await adminService.getUsers();
-          patchState(store, { users: updatedUsers, isLoading: false });
-        } catch (e: any) {
-          notification.error('Failed to update user.');
-          patchState(store, { isLoading: false });
-          throw e;
-        } finally {
-          notification.hideLoader();
-        }
-      }
+         try {
+           await adminService.updateUser(userId, user);
+           if (newPassword) {
+             await adminService.resetPassword(userId, newPassword);
+           }
+           if (roles.length > 0) {
+             await adminService.assignRealmRolesToUser(userId, roles);
+           }
+           
+           notification.success(`User updated successfully!`);
+           
+           const updatedUsers = await adminService.getUsers();
+           patchState(store, { users: updatedUsers, isLoading: false });
+         } catch (e: any) {
+           notification.error('Failed to update user.');
+           patchState(store, { isLoading: false });
+           throw e;
+         } finally {
+           notification.hideLoader();
+         }
+       },
+
+       async fetchLoginEvents(dateFrom: string, dateTo: string, first = 0, maxResults = 100) {
+         if (!keycloak.authenticated) return;
+ 
+         const userRoles = store.userRoles().map(r => String(r).toLowerCase());
+         const isPrivileged = REGISTRY_SYNC_ROLES.some(role => userRoles.includes(role.toLowerCase()));
+         
+         if (!isPrivileged) {
+           console.log('[Vault] Access Restricted: Admin sync skipped.');
+           return;
+         }
+ 
+         patchState(store, { loginEventsLoading: true, loginEventsError: null });
+         notification.showLoader();
+         
+         try {
+           const events = await adminService.getLoginEvents(dateFrom, dateTo, first, maxResults);
+           patchState(store, { loginEvents: events, loginEventsLoading: false, loginEventsError: null });
+         } catch (e: any) {
+           const isServerDown = e.status === 0 || (e.status >= 500 && e.status <= 599);
+           const errorMsg = e.status === 403 ? 'Registry Access Restricted (403)' : 'Vault Sync Offline';
+           
+           patchState(store, { 
+             loginEventsLoading: false, 
+             loginEventsError: errorMsg,
+             loginEvents: []
+           }); 
+           if (!isServerDown) {
+             notification.warning(errorMsg);
+           }
+         } finally {
+           notification.hideLoader();
+         }
+       }
     };
   })
 );

@@ -1,0 +1,20 @@
+/* Session Intelligence Local Styles */
+.active-kpi-blue {
+   background-color: white !important;
+   box-shadow: 0 20px 25px -5px rgba(59, 130, 246, 0.15), 0 10px 10px -5px rgba(59, 130, 246, 0.1) !important;
+   transform: scale(1.05) !important;
+   border-color: #3b82f6 !important;
+}
+
+.active-kpi-emerald {
+   background-color: white !important;
+   box-shadow: 0 20px 25px -5px rgba(16, 185, 129, 0.15), 0 10px 10px -5px rgba(16, 185, 129, 0.1) !important;
+   transform: scale(1.05) !important;
+   border-color: #10b981 !important;
+}
+
+/* Base Styles */
+:host {
+    display: block;
+    width: 100%;
+}

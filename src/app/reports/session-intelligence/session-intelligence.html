@@ -1,0 +1,168 @@
+<!-- Session Intelligence Section -->
+<div class="w-full bg-white glass-surface p-10 rounded-[7px] shadow-2xl shadow-blue-100/20 border border-blue-50 animate-in fade-in slide-in-from-bottom duration-700 delay-900">
+   
+   <div class="flex flex-col xl:flex-row xl:items-center justify-between mb-10 gap-8">
+      <div class="flex flex-col">
+         <h2 class="text-3xl font-black text-slate-900 uppercase tracking-tighter">Session Intelligence</h2>
+         <span class="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">Real-time Authentication Flow Audit</span>
+      </div>
+
+      <div class="flex flex-wrap items-center gap-8">
+         <!-- Session KPIs (Interactive Filters with Premium Active State) -->
+         <div class="flex items-center gap-4">
+            <!-- Total Card -->
+            <div (click)="toggleStatusFilter('ALL')"
+                 [class.active-kpi-blue]="statusFilter() === 'ALL'"
+                 class="relative overflow-hidden bg-blue-50/50 border border-blue-100 px-5 py-3 rounded-[5px] text-center min-w-[120px] transition-all duration-300 hover:bg-white hover:shadow-lg hover:scale-105 !cursor-pointer group">
+               <span class="block text-[8px] font-black text-blue-400 uppercase tracking-widest group-hover:text-blue-500">Total Audited</span>
+               <span class="text-xl font-black text-blue-600 tracking-tighter leading-none">{{ sessionStats().total }}</span>
+               <!-- Active Indicator Bar -->
+               <div *ngIf="statusFilter() === 'ALL'" class="absolute bottom-0 left-0 right-0 h-1 bg-blue-500 animate-in slide-in-from-bottom duration-300"></div>
+            </div>
+
+            <!-- Active Card -->
+            <div (click)="toggleStatusFilter('ACTIVE')"
+                 [class.active-kpi-emerald]="statusFilter() === 'ACTIVE'"
+                 class="relative overflow-hidden bg-emerald-50/50 border border-emerald-100 px-5 py-3 rounded-[5px] text-center min-w-[120px] transition-all duration-300 hover:bg-white hover:shadow-lg hover:scale-105 !cursor-pointer group">
+               <span class="block text-[8px] font-black text-emerald-400 uppercase tracking-widest group-hover:text-emerald-500">Active Links</span>
+               <span class="text-xl font-black text-emerald-600 tracking-tighter leading-none">{{ sessionStats().active }}</span>
+               <!-- Active Indicator Bar -->
+               <div *ngIf="statusFilter() === 'ACTIVE'" class="absolute bottom-0 left-0 right-0 h-1 bg-emerald-500 animate-in slide-in-from-bottom duration-300"></div>
+            </div>
+         </div>
+
+         <div class="h-10 w-px bg-slate-100 mx-2 hidden lg:block"></div>
+
+         <!-- Export Suite (Compact Header Placement) -->
+         <div class="flex items-center gap-4">
+            <button (click)="exportLoginEventsExcel()" class="w-12 h-12 bg-white border border-emerald-100 text-emerald-600 rounded-[5px] flex items-center justify-center shadow-sm hover:bg-emerald-50 hover:border-emerald-200 hover:scale-110 hover:shadow-lg transition-all !cursor-pointer active:scale-95 group" pTooltip="Export Excel">
+               <i class="pi pi-file-excel text-xl"></i>
+            </button>
+            <button (click)="exportLoginEventsPdf()" class="w-12 h-12 bg-white border border-red-100 text-red-600 rounded-[5px] flex items-center justify-center shadow-sm hover:bg-red-50 hover:border-red-200 hover:scale-110 hover:shadow-lg transition-all !cursor-pointer active:scale-95 group" pTooltip="Export PDF">
+               <i class="pi pi-file-pdf text-xl"></i>
+            </button>
+         </div>
+      </div>
+   </div>
+
+   <!-- Refined Analytical Controls Hub -->
+   <div class="mb-10 flex flex-wrap items-end gap-6 bg-slate-50/30 p-8 rounded-[7px] border border-blue-50 shadow-inner">
+      <div class="flex flex-col gap-2 min-w-[200px] flex-1 xl:flex-none">
+         <label class="text-[9px] font-black uppercase text-slate-400 tracking-widest ml-1">Temporal Start</label>
+         <p-datepicker [ngModel]="dateFrom()" (ngModelChange)="dateFrom.set($event)" dateFormat="mm/dd/yy" [fluid]="true" variant="filled" [showIcon]="true" iconDisplay="input" 
+                       [maxDate]="dateTo()"
+                       inputStyleClass="!h-12 !bg-white !border-blue-50 !rounded-[5px] !text-xs !font-bold !text-slate-700 shadow-sm" />
+      </div>
+      <div class="flex flex-col gap-2 min-w-[200px] flex-1 xl:flex-none">
+         <label class="text-[9px] font-black uppercase text-slate-400 tracking-widest ml-1">Temporal End</label>
+         <p-datepicker [ngModel]="dateTo()" (ngModelChange)="dateTo.set($event)" dateFormat="mm/dd/yy" [fluid]="true" variant="filled" [showIcon]="true" iconDisplay="input"
+                       [minDate]="dateFrom()" [maxDate]="maxAllowedDate"
+                       inputStyleClass="!h-12 !bg-white !border-blue-50 !rounded-[5px] !text-xs !font-bold !text-slate-700 shadow-sm" />
+      </div>
+      <div class="flex flex-col gap-2 flex-grow">
+         <label class="text-[9px] font-black uppercase text-slate-400 tracking-widest ml-1">Filter Context</label>
+         <div class="relative h-12 group">
+            <i class="pi pi-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 z-10 transition-colors group-focus-within:text-blue-500"></i>
+            <input pInputText type="text" [ngModel]="filterText()" (ngModelChange)="filterText.set($event)" 
+                   placeholder="Search Identity, IP, or Client context..." 
+                   class="w-full !h-full !pl-12 !pr-12 !bg-white !border-blue-50 !rounded-[5px] !text-xs !font-bold !text-slate-700 focus:!border-blue-400 transition-all shadow-sm" />
+            
+            <!-- Clear Icon (Dynamic) -->
+            <i *ngIf="filterText()" 
+               (click)="filterText.set('')"
+               class="pi pi-times-circle absolute right-4 top-1/2 -translate-y-1/2 text-slate-300 hover:text-red-500 cursor-pointer transition-all hover:scale-110 z-20 animate-in fade-in zoom-in duration-200"></i>
+         </div>
+      </div>
+      <button (click)="fetchLoginEvents()" class="h-12 px-10 bg-blue-600 text-white rounded-[5px] flex items-center justify-center gap-3 shadow-xl shadow-blue-200 hover:bg-blue-700 transition-all !cursor-pointer active:scale-95 group shrink-0">
+         <i class="pi pi-refresh text-lg group-hover:rotate-180 transition-transform duration-700"></i>
+         <span class="text-[10px] font-black uppercase tracking-widest">Refresh Logs</span>
+      </button>
+   </div>
+
+   <!-- Global Sync Overlay (Standalone) -->
+   <div *ngIf="store.loginEventsLoading()" class="fixed inset-0 z-[100] bg-white/20 backdrop-blur-[2px] flex items-center justify-center animate-in fade-in duration-300 pointer-events-none">
+      <div class="bg-white/80 p-6 rounded-2xl shadow-2xl border border-blue-50 flex items-center gap-4 animate-in zoom-in duration-500">
+         <div class="w-10 h-10 border-4 border-blue-100 border-t-blue-600 rounded-full animate-spin"></div>
+         <div class="flex flex-col">
+            <span class="text-xs font-black text-blue-800 uppercase tracking-widest">Authority Vault</span>
+            <span class="text-[10px] font-bold text-slate-500 uppercase tracking-tight">Syncing Security Data...</span>
+         </div>
+      </div>
+   </div>
+
+   <!-- Error State: Permission/Sync Issues -->
+   <div *ngIf="store.loginEventsError()" class="p-6 bg-red-50 border border-red-100 rounded-[7px] mb-8 flex items-start gap-4 animate-in fade-in slide-in-from-top duration-500">
+      <div class="w-10 h-10 rounded-full bg-red-100 text-red-600 flex items-center justify-center shrink-0">
+         <i class="pi pi-exclamation-circle text-xl"></i>
+      </div>
+      <div class="flex flex-col">
+         <span class="text-sm font-black text-red-800 uppercase tracking-tight">Security Access Restricted</span>
+         <p class="text-xs text-red-600 mt-1 leading-relaxed">
+            The Authority Vault was unable to sync session logs ({{ store.loginEventsError() }}). 
+            Please ensure your account has the <code class="bg-red-100 px-1 rounded font-bold">view-events</code> role assigned in Keycloak.
+         </p>
+      </div>
+   </div>
+
+   <!-- Session Events Table -->
+   <div *ngIf="filteredSessions().length > 0">
+      <p-table [value]="filteredSessions()" 
+              [responsiveLayout]="'scroll'" 
+              styleClass="p-datatable-lg"
+              [paginator]="true" 
+              [rows]="10" 
+              [rowsPerPageOptions]="[10, 20, 50]"
+              [showCurrentPageReport]="true"
+              currentPageReportTemplate="Showing {first} to {last} of {totalRecords} sessions">
+         <ng-template pTemplate="header">
+            <tr>
+               <th class="!pl-10 !py-8 !text-slate-500 !text-[9px] !font-black !uppercase !tracking-[0.4em] !whitespace-nowrap">Identity</th>
+               <th class="!text-slate-500 !text-[9px] !font-black !uppercase !tracking-[0.4em] !whitespace-nowrap">Username</th>
+               <th class="!text-slate-500 !text-[9px] !font-black !uppercase !tracking-[0.4em] !whitespace-nowrap">Client / IP</th>
+               <th class="!text-slate-500 !text-[9px] !font-black !uppercase !tracking-[0.4em] !whitespace-nowrap">Login Time</th>
+               <th class="!text-slate-500 !text-[9px] !font-black !uppercase !tracking-[0.4em] !whitespace-nowrap">Logout Time</th>
+               <th class="!text-slate-500 !text-[9px] !font-black !uppercase !tracking-[0.4em] !whitespace-nowrap">Duration</th>
+               <th class="text-center !pr-10 !text-slate-500 !text-[9px] !font-black !uppercase !tracking-[0.4em] !whitespace-nowrap">Status</th>
+            </tr>
+         </ng-template>
+         <ng-template pTemplate="body" let-session>
+            <tr class="transition-all hover:bg-slate-50/50 border-b border-blue-50/50 last:border-b-0 group">
+               <td class="!py-6 !pl-10">
+                  <div class="flex items-center gap-3">
+                     <div class="w-8 h-8 rounded-[5px] bg-blue-100 text-blue-700 font-black flex items-center justify-center text-xs uppercase">
+                        {{ session.fullName.substring(0, 2) }}
+                     </div>
+                     <span class="text-xs font-black text-slate-800 uppercase tracking-tight">{{ session.fullName }}</span>
+                  </div>
+               </td>
+               <td class="!py-6">
+                  <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{{ session.username }}</span>
+               </td>
+               <td class="!py-6">
+                  <div class="flex flex-col">
+                     <span class="text-xs font-bold text-slate-700">{{ session.client }}</span>
+                     <span class="text-[9px] font-mono text-slate-400 mt-1">{{ session.ipAddress }}</span>
+                  </div>
+               </td>
+               <td class="!py-6 text-xs text-slate-600 font-medium !whitespace-nowrap">{{ formatDate(session.loginTime) }}</td>
+               <td class="!py-6 text-xs text-slate-600 font-medium !whitespace-nowrap">{{ formatDate(session.logoutTime) }}</td>
+               <td class="!py-6 !whitespace-nowrap">
+                  <span class="text-[10px] font-black text-blue-600 bg-blue-50 px-2.5 py-1 rounded-[3px] border border-blue-100">{{ session.duration }}</span>
+               </td>
+               <td class="text-center !pr-10 !py-6">
+                  <p-tag [value]="session.status" 
+                         [severity]="session.status === 'ACTIVE' ? 'success' : 'info'" 
+                         styleClass="!text-[9px] !font-black !uppercase !px-3 !py-1 !rounded-[3px] !border-none"></p-tag>
+               </td>
+            </tr>
+         </ng-template>
+      </p-table>
+   </div>
+
+   <!-- Empty State -->
+   <div *ngIf="!store.loginEventsLoading() && filteredSessions().length === 0 && !store.loginEventsError()" class="text-center py-20 bg-slate-50/50 rounded-[7px] border border-blue-50 mt-6">
+      <i class="pi pi-history text-6xl text-slate-200 mb-6 block"></i>
+      <p class="text-slate-500 font-bold text-lg">No matching authentication sessions found.</p>
+      <span class="text-slate-400 text-xs mt-2 block">Try adjusting your filters or date range.</span>
+   </div>
+</div>

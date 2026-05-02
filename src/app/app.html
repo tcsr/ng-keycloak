@@ -70,6 +70,13 @@
                   <div class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
                   <span class="text-[9px] font-black uppercase text-slate-500 leading-none tracking-widest uppercase">Registry Live</span>
                </div>
+               @if (store.isSSO()) {
+                 <div class="mt-1 flex items-center gap-1">
+                    <span class="text-[8px] bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded-full font-black uppercase tracking-widest border border-blue-100 flex items-center gap-1">
+                       <i class="pi pi-google scale-75"></i> {{ store.loginSource() }}
+                    </span>
+                 </div>
+              }
             </div>
             <i class="pi pi-chevron-down text-[10px] text-slate-500 transition-all" [class.rotate-180]="showUserPanel()"></i>
           </button>
@@ -84,6 +91,12 @@
                 </div>
                 <h3 class="text-lg font-black text-slate-900 uppercase tracking-tighter leading-none mb-1 capitalize">{{ fullName() }}</h3>
                 <span class="text-[9px] font-bold text-slate-400 uppercase tracking-[0.3em] font-mono select-all">{{ email() }}</span>
+                <div class="mt-3">
+                   <span class="text-[8px] px-2 py-1 rounded-[4px] font-black uppercase tracking-widest border"
+                         [ngClass]="store.isSSO() ? 'bg-indigo-50 text-indigo-600 border-indigo-100' : 'bg-slate-50 text-slate-500 border-slate-100'">
+                     {{ store.isSSO() ? 'ID SOURCE: ' + store.loginSource() : 'ID SOURCE: DIRECT ACCESS' }}
+                   </span>
+                </div>
               </div>
               
               <div class="p-8 space-y-8 max-h-[400px] overflow-y-auto">

@@ -221,4 +221,27 @@ export class KeycloakAdminService {
       throw error;
     }
   }
+
+  /**
+   * Fetches login events from the Keycloak Admin REST API.
+   * @param dateFrom - ISO string for start date
+   * @param dateTo - ISO string for end date
+   * @param first - Offset for pagination
+   * @param maxResults - Maximum number of results to return
+   */
+  async getLoginEvents(dateFrom: string, dateTo: string, first = 0, maxResults = 100): Promise<any[]> {
+    const realm = this.keycloak.realm || 'master';
+    const baseUrl = this.keycloak.authServerUrl || 'http://localhost:8080';
+    const url = `${baseUrl}/admin/realms/${realm}/events?type=LOGIN&type=LOGOUT&dateFrom=${dateFrom}&dateTo=${dateTo}&first=${first}&max=${maxResults}`;
+
+    try {
+      const headers = {
+        'Authorization': `Bearer ${this.keycloak.token}`
+      };
+      return await firstValueFrom(this.http.get<any[]>(url, { headers }));
+    } catch (error) {
+      console.error('Error fetching login events:', error);
+      throw error;
+    }
+  }
 }

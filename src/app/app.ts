@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterOutlet, RouterLink, RouterLinkActive, Router } from '@angular/router';
 import { AppStore } from './store/app.store';
 import { LoaderComponent, ToasterComponent } from './notification-ui';
+import { LANDING_PRIORITY } from './acl.config';
 import { ButtonModule } from 'primeng/button';
 import { ScrollTopModule } from 'primeng/scrolltop';
 import { TooltipModule } from 'primeng/tooltip';
@@ -23,17 +24,21 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     if (this.authenticated()) {
-      // IDENTITY PERSISTENCE HANDSHAKE: Correct redirection for account switches
-      const lastIdentity = localStorage.getItem('last_vault_session_identity');
-      const currentIdentity = this.store.username();
-
-      if (lastIdentity && lastIdentity !== currentIdentity) {
-        this.router.navigate(['/dashboard']);
+      // 🛡️ SECURITY RESET & ROLE-BASED LANDING
+      const isFreshSession = !sessionStorage.getItem('vault_session_active');
+      
+      if (isFreshSession) {
+        sessionStorage.setItem('vault_session_active', 'true');
+        
+        // Find the best landing page based on roles
+        const userRoles = this.store.userRoles().map(r => String(r).toLowerCase());
+        const landing = LANDING_PRIORITY.find(lp => userRoles.includes(lp.role.toLowerCase()));
+        
+        const landingPath = landing ? landing.path : '/dashboard';
+        this.router.navigate([landingPath]);
       }
-      // ALWAYS CLEAR ARCHIVE AFTER THE CHECK
-      localStorage.removeItem('last_vault_session_identity');
 
-      this.store.loadInitialData(); // Global Sync only if session active
+      this.store.loadInitialData(); 
     }
 
     // VAULT PULSE: Re-sync every 120 seconds (background heartbeat)
@@ -111,6 +116,7 @@ export class AppComponent implements OnInit {
   }
 
   logout() {
+    sessionStorage.removeItem('vault_session_active');
     this.store.logout();
   }
 }

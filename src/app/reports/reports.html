@@ -94,47 +94,47 @@
        </div>
     </div>
 
-    <!-- AUDIT REGISTRY REGISTRY ACTIVITY (SHARP 7px) -->
-    <div class="xl:col-span-2 bg-white glass-surface rounded-[7px] overflow-hidden overflow-x-hidden border border-blue-50 shadow-2xl shadow-blue-50/20 animate-in fade-in slide-in-from-bottom duration-700 delay-1000">
-       <div class="p-10 border-b border-blue-50 flex items-center justify-between bg-blue-50/10">
-          <div class="flex flex-col">
-             <h2 class="text-3xl font-black text-slate-900 uppercase tracking-tighter leading-none mb-1">Audit Registry</h2>
-             <span class="text-xs font-bold text-slate-400 tracking-tight">Real-time log of security events and identity modifications</span>
-          </div>
-          <div class="flex items-center gap-4">
-             <button (click)="exportExcel()" class="h-14 px-6 bg-white border border-emerald-100 text-emerald-600 rounded-[7px] flex items-center justify-center gap-3 shadow-inner hover:bg-emerald-50 transition-all !cursor-pointer active:scale-95 group">
-                <i class="pi pi-file-excel text-xl"></i>
-                <span class="text-[10px] font-black uppercase tracking-widest hidden lg:inline">XLSX</span>
-             </button>
-             <button (click)="exportPdf()" class="h-14 px-6 bg-white border border-red-100 text-red-600 rounded-[7px] flex items-center justify-center gap-3 shadow-inner hover:bg-red-50 transition-all !cursor-pointer active:scale-95 group">
-                <i class="pi pi-file-pdf text-xl"></i>
-                <span class="text-[10px] font-black uppercase tracking-widest hidden lg:inline">PDF</span>
-             </button>
-          </div>
-       </div>
+     <!-- AUDIT REGISTRY REGISTRY ACTIVITY (SHARP 7px) -->
+     <div class="xl:col-span-2 bg-white glass-surface rounded-[7px] overflow-hidden overflow-x-hidden border border-blue-50 shadow-2xl shadow-blue-50/20 animate-in fade-in slide-in-from-bottom duration-700 delay-1000">
+        <div class="p-10 border-b border-blue-50 flex items-center justify-between bg-blue-50/10">
+           <div class="flex flex-col">
+              <h2 class="text-3xl font-black text-slate-900 uppercase tracking-tighter leading-none mb-1">Audit Registry</h2>
+              <span class="text-xs font-bold text-slate-400 tracking-tight">Real-time log of security events and identity modifications</span>
+           </div>
+           <div class="flex items-center gap-4">
+              <button (click)="exportExcel()" class="h-14 px-6 bg-white border border-emerald-100 text-emerald-600 rounded-[7px] flex items-center justify-center gap-3 shadow-inner hover:bg-emerald-50 transition-all !cursor-pointer active:scale-95 group">
+                 <i class="pi pi-file-excel text-xl"></i>
+                 <span class="text-[10px] font-black uppercase tracking-widest hidden lg:inline">XLSX</span>
+              </button>
+              <button (click)="exportPdf()" class="h-14 px-6 bg-white border border-red-100 text-red-600 rounded-[7px] flex items-center justify-center gap-3 shadow-inner hover:bg-red-50 transition-all !cursor-pointer active:scale-95 group">
+                 <i class="pi pi-file-pdf text-xl"></i>
+                 <span class="text-[10px] font-black uppercase tracking-widest hidden lg:inline">PDF</span>
+              </button>
+           </div>
+        </div>
 
-       <p-table [value]="store.users()" [responsiveLayout]="'scroll'" styleClass="p-datatable-lg">
-          <ng-template pTemplate="header">
-             <tr>
-                <th class="!pl-10 !py-8 !text-slate-500 !text-[9px] !font-black !uppercase !tracking-[0.4em]">Event Context</th>
-                <th class="!text-slate-500 !text-[9px] !font-black !uppercase !tracking-[0.4em]">Account State</th>
-                <th class="text-center !pr-10 !text-slate-500 !text-[9px] !font-black !uppercase !tracking-[0.4em]">Event ID</th>
-             </tr>
-          </ng-template>
-          <ng-template pTemplate="body" let-user>
-             <tr class="transition-all hover:bg-slate-50/50 border-b border-blue-50/50 last:border-b-0 group">
-                <td class="!py-10 !pl-10">
-                   <div class="flex items-center gap-5">
-                      <div class="w-12 h-12 rounded-[5px] bg-blue-50 text-blue-700 font-black flex items-center justify-center">
-                         <i class="pi pi-calendar-plus text-lg"></i>
-                      </div>
-                      <div class="flex flex-col">
-                         <span class="text-sm font-black text-slate-800 uppercase tracking-tight">Identity Enrolled</span>
-                         <span class="text-[9px] font-black text-blue-300 tracking-widest mt-1 uppercase">{{ user.firstName || '' }} {{ user.lastName || '' }} ({{ user.username }})</span>
-                      </div>
-                   </div>
-                </td>
-                <td>
+        <p-table [value]="store.users()" [responsiveLayout]="'scroll'" styleClass="p-datatable-lg">
+           <ng-template pTemplate="header">
+              <tr>
+                 <th class="!pl-10 !py-8 !text-slate-500 !text-[9px] !font-black !uppercase !tracking-[0.4em]">Event Context</th>
+                 <th class="!text-slate-500 !text-[9px] !font-black !uppercase !tracking-[0.4em]">Account State</th>
+                 <th class="text-center !pr-10 !text-slate-500 !text-[9px] !font-black !uppercase !tracking-[0.4em]">Event ID</th>
+              </tr>
+           </ng-template>
+           <ng-template pTemplate="body" let-user>
+              <tr class="transition-all hover:bg-slate-50/50 border-b border-blue-50/50 last:border-b-0 group">
+                 <td class="!py-10 !pl-10">
+                    <div class="flex items-center gap-5">
+                       <div class="w-12 h-12 rounded-[5px] bg-blue-50 text-blue-700 font-black flex items-center justify-center">
+                          <i class="pi pi-calendar-plus text-lg"></i>
+                       </div>
+                       <div class="flex flex-col">
+                          <span class="text-sm font-black text-slate-800 uppercase tracking-tight">Identity Enrolled</span>
+                          <span class="text-[9px] font-black text-blue-300 tracking-widest mt-1 uppercase">{{ user.firstName || '' }} {{ user.lastName || '' }} ({{ user.username }})</span>
+                       </div>
+                    </div>
+                 </td>
+                 <td>
                     <div class="flex items-center gap-2">
                        <p-tag [value]="user.enabled ? 'ACTIVE' : 'LOCKED'" 
                               [severity]="user.enabled ? 'success' : 'danger'" 
@@ -143,14 +143,16 @@
                               [severity]="user.emailVerified ? 'info' : 'warn'" 
                               styleClass="!text-[9px] !font-black !uppercase !px-3 !py-1 !rounded-[3px] !border-none"></p-tag>
                     </div>
-                </td>
-                <td class="text-center !pr-10">
-                   <span class="text-[9px] font-mono font-bold text-slate-400 uppercase tracking-tighter"># {{ user.id.substring(0, 15) }}...</span>
-                </td>
-             </tr>
-          </ng-template>
-       </p-table>
-    </div>
+                 </td>
+                 <td class="text-center !pr-10">
+                    <span class="text-[9px] font-mono font-bold text-slate-400 uppercase tracking-tighter"># {{ user.id.substring(0, 15) }}...</span>
+                 </td>
+              </tr>
+           </ng-template>
+        </p-table>
+     </div>
 
-  </div>
+     <!-- NEW: LOGIN EVENTS SECTION (FULL WIDTH) -->
+      <app-session-intelligence class="xl:col-span-3" />
+   </div>
 </div>

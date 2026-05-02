@@ -1,27 +1,45 @@
-import { Component, inject, signal, OnInit, computed } from '@angular/core';
+import { Component, inject, signal, computed, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { AppStore } from '../store/app.store';
+import { ChartModule } from 'primeng/chart';
+import { TableModule } from 'primeng/table';
+import { ButtonModule } from 'primeng/button';
+import { TagModule } from 'primeng/tag';
+import { TooltipModule } from 'primeng/tooltip';
+import { BadgeModule } from 'primeng/badge';
+import { InputTextModule } from 'primeng/inputtext';
 import * as XLSX from 'xlsx';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
-
-// PrimeNG 21 Imports for Analytics
-import { ChartModule } from 'primeng/chart';
-import { CardModule } from 'primeng/card';
-import { TagModule } from 'primeng/tag';
-import { TableModule } from 'primeng/table';
-import { BadgeModule } from 'primeng/badge';
-import { TooltipModule } from 'primeng/tooltip';
+import { SessionIntelligenceComponent } from './session-intelligence/session-intelligence';
 
 @Component({
   selector: 'app-reports',
   standalone: true,
-  imports: [CommonModule, ChartModule, CardModule, TagModule, TableModule, BadgeModule, TooltipModule],
+  imports: [
+    CommonModule, 
+    FormsModule, 
+    ChartModule, 
+    TableModule, 
+    ButtonModule, 
+    TagModule, 
+    TooltipModule,
+    BadgeModule,
+    InputTextModule,
+    SessionIntelligenceComponent
+  ],
   templateUrl: './reports.html',
-  styleUrl: './reports.css'
+  styleUrls: ['./reports.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ReportsComponent implements OnInit {
   readonly store = inject(AppStore);
+
+  // ANALYTICAL KPI HUB
+  enrolledCount = computed(() => this.store.users().length);
+  lockedCount = computed(() => this.store.users().filter((u: any) => !u.enabled).length);
+  pendingCount = computed(() => this.store.users().filter((u: any) => !u.emailVerified).length);
 
   // DYNAMIC ANALYTICAL COORDINATES (COMPUTED SIGNALS)
   identityData = computed(() => {
@@ -34,7 +52,7 @@ export class ReportsComponent implements OnInit {
       datasets: [
         {
           data: [enabledCount, disabledCount],
-          backgroundColor: ['#2563eb', '#ef4444'], // Blue for Active, Red for Inactive
+          backgroundColor: ['#2563eb', '#ef4444'],
           hoverBackgroundColor: ['#1d4ed8', '#dc2626'],
           borderWidth: 0
         }
@@ -64,7 +82,6 @@ export class ReportsComponent implements OnInit {
 
   anomalyData = computed(() => {
     const users = this.store.users();
-    // Grouping identities by status to calculate security vectors
     const active = users.filter((u: any) => u.enabled).length;
     const verified = users.filter((u: any) => u.emailVerified).length;
     const restricted = users.length - active;
@@ -73,26 +90,22 @@ export class ReportsComponent implements OnInit {
       labels: ['Active Link', 'Verified Sync', 'Restricted Mode', 'Governance OK', 'Audit Ready'],
       datasets: [
         {
-          label: 'Administrative Vector',
-          data: [active, verified, restricted, users.length, users.length * 0.8],
-          backgroundColor: 'rgba(59, 130, 246, 0.2)',
-          borderColor: '#3b82f6',
-          pointBackgroundColor: '#3b82f6',
+          label: 'Identity Threat Vectors',
+          data: [active, verified, restricted, users.length, users.length * 0.9],
+          fill: true,
+          backgroundColor: 'rgba(37, 99, 235, 0.2)',
+          borderColor: '#2563eb',
+          pointBackgroundColor: '#2563eb',
           pointBorderColor: '#fff',
           pointHoverBackgroundColor: '#fff',
-          pointHoverBorderColor: '#3b82f6'
+          pointHoverBorderColor: '#2563eb'
         }
       ]
     };
   });
 
-  // ANALYTICAL KPI HUB
-  enrolledCount = computed(() => this.store.users().length);
-  lockedCount = computed(() => this.store.users().filter((u: any) => !u.enabled).length);
-  pendingCount = computed(() => this.store.users().filter((u: any) => !u.emailVerified).length);
-
   chartOptions = signal<any>(null);
-  radarOptions = signal<any>(null); // ISOLATED RADAR OPTIONS
+  radarOptions = signal<any>(null);
 
   ngOnInit() {
     this.initChartOptions();
@@ -106,7 +119,6 @@ export class ReportsComponent implements OnInit {
     const textColorSecondary = '#64748b';
     const surfaceBorder = '#e2e8f0';
 
-    // STANDARD LINE/DOUGHNUT OPTIONS
     this.chartOptions.set({
       maintainAspectRatio: false,
       plugins: {
@@ -118,7 +130,6 @@ export class ReportsComponent implements OnInit {
       }
     });
 
-    // ISOLATED RADAR HUB OPTIONS (CRITICAL FIX)
     this.radarOptions.set({
       maintainAspectRatio: false,
       plugins: {
@@ -135,7 +146,12 @@ export class ReportsComponent implements OnInit {
     });
   }
 
-  // IDENTITY REGISTRY EXPORT HUB
+  // Date helper for Identity Registry
+  formatDate(date: any): string {
+    if (!date) return 'N/A';
+    return new Date(date).toLocaleDateString();
+  }
+
   exportExcel() {
     const data = this.store.users().map((u: any) => ({
       'Identity ID': u.id,
@@ -172,10 +188,10 @@ export class ReportsComponent implements OnInit {
       margin: { top: 25 },
       didDrawPage: (data: any) => {
         doc.setFontSize(16);
-        doc.setTextColor(15, 23, 42); // Slate-900
+        doc.setTextColor(15, 23, 42);
         doc.text('Authority Vault: Identity Registry Audit', data.settings.margin.left, 15);
         doc.setFontSize(10);
-        doc.setTextColor(100, 116, 139); // Slate-500
+        doc.setTextColor(100, 116, 139);
         doc.text(`Generated: ${new Date().toLocaleString()}`, data.settings.margin.left, 20);
       }
     });
